@@ -4,13 +4,17 @@
     [monger.core :as mg]
     [monger.collection :as mc]
     [environ.core :refer [env]])
-  (:import 
+  (:import
     [org.bson.types ObjectId]))
 
 
 (defn create [params]
-  (m/insert-doc m/edges (conj params {:graph-id (ObjectId. (:graph-id params))}))
-  (m/get-doc m/edges (conj params {:graph-id (ObjectId. (:graph-id params))})))
+  (prn params)
+  (m/insert-doc m/edges (conj params {:graph_id (ObjectId. (:graph_id params))}))
+  (m/get-doc m/edges (conj params {:graph_id (ObjectId. (:graph_id params))})))
+
+(defn count [params]
+  (m/doc-count m/edges (conj params {:graph_id (ObjectId. (:graph_id params))})))
 
 (defn edit [params]
   (m/update-doc m/edges {"_id" (:id params)} params))

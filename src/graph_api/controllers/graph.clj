@@ -6,20 +6,26 @@
     [graph-api.gexf :as gexf]
     [clojure.java.io :as io]
     [environ.core :refer [env]])
-  (:import 
+  (:import
     [org.bson.types ObjectId]))
 
 (defn create [params]
   (m/insert-doc m/graphs (conj {:node_ids []} params))
   (m/get-doc m/graphs params))
 
+(defn to-object-id [object-id]
+  (ObjectId. object-id))
+
+(defn push-node-id [object-id graph-id]
+  (m/push m/graphs {"_id" (ObjectId. graph-id)} {"node_ids" (ObjectId. object-id)}))
+
 (defn add-node [params]
-  (m/push m/graphs {"_id" (ObjectId. (:graph_id params))} {"node_ids" (ObjectId. (:node_ids params))})
-  (m/get-doc m/graphs {"_id" (ObjectId. (:graph_id params))}))
+  (mapv push-node-id (get params "node_ids") (into [] (repeat (count (get params "node_ids")) (get params "graph_id"))))
+  (m/get-doc m/graphs {"_id" (ObjectId. (get params "graph_id"))}))
 
 (defn drop-node [params]
-  (m/pull m/graphs {"_id" (ObjectId. (:graph_id params))} {"node_ids" (ObjectId. (:node_ids params))})
-  (m/get-doc m/graphs {"_id" (ObjectId. (:graph_id params))}))
+  (m/pull m/graphs {"_id" (ObjectId. (get params "graph_id"))} {"node_ids" (into [] (map to-object-id (get params "node_ids")))})
+  (m/get-doc m/graphs {"_id" (ObjectId. (get params "graph_id"))}))
 
 (defn edit [params]
   (m/update-doc m/graphs {"_id" (:id params)} params))

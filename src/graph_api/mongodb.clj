@@ -1,5 +1,5 @@
 (ns graph-api.mongodb
-  (:require 
+  (:require
     [digest :as d]
     [cheshire.core :as json]
     [monger.core :as mg]
@@ -10,17 +10,21 @@
     clojure.core.incubator
     monger.json)
   (:use clj-time.coerce)
-  (:import 
+  (:import
     [com.mongodb MongoOptions ServerAddress]
     [org.bson.types ObjectId]))
 
+(defn doc-count
+  [collection conditions]
+  (mc/count collection conditions))
+
 (defn new-document
   [doc]
-  (conj doc {"_id" (ObjectId.) "updated_at" (java.util.Date.) "created_at" (java.util.Date.)}))
+  (conj doc {"updated_at" (java.util.Date.)}))
 
 (defn insert-doc
   [collection doc]
-  (mc/insert collection (new-document doc)))
+  (mc/update collection doc (conj {"updated_at" (java.util.Date.)} doc) :upsert true))
 
 (defn remove-doc
   [collection lookup]
@@ -33,6 +37,7 @@
 
 (defn get-doc
   [collection lookup]
+  (prn "Get Doc")
   (conj (return-map-from-lookup collection lookup) {:_id (.toString (:_id (return-map-from-lookup collection lookup)))}))
 
 (defn update-doc
@@ -45,13 +50,14 @@
 
 (defn push
   [collection lookup pusher]
+  (prn pusher)
   (mc/update collection lookup {$addToSet pusher}))
 
 (defn pull
   [collection lookup puller]
   (mc/update collection lookup {$pull puller}))
 
-(defn error 
+(defn error
   [message]
   (spit "./logs/error.log" (str "\n" (java.util.Date.) "\n" message "\n\n\n") :append true))
 
@@ -71,7 +77,7 @@
 
 (def users "users")
 
-(defn connect! 
+(defn connect!
   [database-name]
   (let [^MongoOptions opts (mg/mongo-options :auto-connect-retry true :threads-allowed-to-block-for-connection-multiplier 1500)
         ^ServerAddress sa  (mg/server-address "127.0.0.1" 27017)]

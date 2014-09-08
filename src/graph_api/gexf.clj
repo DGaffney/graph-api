@@ -4,7 +4,7 @@
     [monger.core :as mg]
     [monger.collection :as mc]
     [monger.operators :refer :all])
-  (:import 
+  (:import
     [org.bson.types ObjectId]))
 (defn xml-builder
   [set plural singular]
@@ -61,7 +61,7 @@
 
 (def nodes-footer
   "\n      </nodes>")
-  
+
 (def edges-header
   "\n      <edges>")
 
@@ -70,7 +70,7 @@
 
 (def graph-footer
   "\n   </graph>")
-  
+
 (def gexf-footer
   "\n</gexf>")
 
@@ -94,14 +94,14 @@
     (.write w (graph-header (or (:declarations graph) {})))
     (.write w nodes-header)
     (doall
-      (for [node-data (m/get-docs m/nodes {:_id {$in (:node-ids graph)}})] 
+      (for [node-data (m/get-docs m/nodes {:_id {$in (:node_ids graph)}})] 
         (.write w (node node-data))
       )
     )
     (.write w nodes-footer)
     (.write w edges-header)
     (doall
-      (for [edge-data (m/get-docs m/edges {:graph-id (ObjectId. (:_id graph))})] 
+      (for [edge-data (m/get-docs m/edges {:graph-id (ObjectId. (:_id graph))})]
         (.write w (edge edge-data))
       )
     )
