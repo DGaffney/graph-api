@@ -12,6 +12,11 @@
 (defn edit [params]
   (m/update-doc m/users {"_id" (:id params)} params))
 
+(defn update-password [params]
+  (prn params)
+  (m/update-doc (m/get-doc m/users {"name" (:name params)}) (conj (m/get-doc m/users {"name" (:name params)}) {"md5" (:md5 params)}))
+  (m/get-doc m/users params))
+
 (defn destroy [params]
   (m/remove-doc m/users params))
 

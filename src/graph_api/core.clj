@@ -29,6 +29,7 @@
   (ANY "/v1/user/index.json" {params :params} (respond (controllers.user/index params)))
   (ANY "/v1/user/create.json" {params :params} (respond (controllers.user/create params)))
   (ANY "/v1/user/edit.json" {params :params} (respond (controllers.user/edit params)))
+  (ANY "/v1/user/update_password.json" {params :params} (respond (controllers.user/update-password params)))
   (ANY "/v1/user/destroy.json" {params :params} (respond (controllers.user/destroy params)))
   (ANY "/v1/graph/index.json" {params :params} (respond (controllers.graph/index params)))
   (ANY "/v1/graph/create.json" {params :params} (respond (controllers.graph/create params)))
