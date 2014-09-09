@@ -42,7 +42,7 @@
 
 (defn update-doc
   [collection lookup updates]
-  (mc/insert collection (conj (get-doc collection lookup) updates)))
+  (mc/update collection lookup updates))
 
 (defn get-docs
   [collection lookup]
