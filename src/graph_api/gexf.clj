@@ -27,7 +27,7 @@
   (str "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
   <gexf xmlns=\"http://www.gexf.net/1.2draft\" version=\"1.2\" xmlns:viz=\"http://www.gexf.net/1.2draft/viz\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd\">
     <meta lastmodifieddate=\"" (subs (pr-str (java.util.Date.)) 7 17) "\">
-      <creator>Gephi 0.8</creator>
+      <creator>Northeastern Graph API</creator>
       <description></description>
     </meta>"))
 
@@ -80,11 +80,11 @@
 
 (defn node
   [node-data]
-  (clojure.string/join ["\n        <node id=\"" (:id node-data) "\" label=\"" (or (:label node-data) (:id node-data)) "\">" (attvalues {:attvalues (or [] (:attributes node-data))}) (size (or (:size node-data) "1")) (position (or (:position node-data) {})) (color (or (:color node-data) {})) "\n        </node>"]))
+  (clojure.string/join ["\n        <node id=\"" (str (:id node-data)) "\" label=\"" (str (or (:label node-data) (:id node-data))) "\">" (attvalues {:attvalues (or [] (:attributes node-data))}) (size (or (:size node-data) "1")) (position (or (:position node-data) {})) (color (or (:color node-data) {})) "\n        </node>"]))
 
 (defn edge
   [edge-data]
-  (clojure.string/join ["\n        <edge id=\"" (or (:id edge-data) (str (:source edge-data) "-" (:target edge-data))) \"" source=\"" (:target edge-data) \"" target=\"" (:target edge-data) \"" weight=\"" (or (:weight edge-data) "1") \"">" (attvalues {:attvalues (:attributes edge-data)}) "\n        </edge>"]))
+  (clojure.string/join ["\n        <edge id=\"" (or (:id edge-data) (str (:source edge-data) "-" (:target edge-data))) \"" source=\"" (:source edge-data) \"" target=\"" (:target edge-data) \"" weight=\"" (or (:weight edge-data) "1") \"">" (attvalues {:attvalues (:attributes edge-data)}) "\n        </edge>"]))
 
 (defn write-file [graph-id]
   ;{:nodes [{:id "13734562" :label "Devin" :attributes [{:value "2" :for "Friends"} {:value 7 :for "Number"}] :size 100 :position {:x 10 :y 100} :color {:r 100 :g 80 :b 90}}] :edges [{:source 13731562 :target 13731561}]}
@@ -101,7 +101,7 @@
     (.write w nodes-footer)
     (.write w edges-header)
     (doall
-      (for [edge-data (m/get-docs m/edges {:graph-id (ObjectId. (:_id graph))})]
+      (for [edge-data (m/get-docs m/edges {:graph_id (ObjectId. (:_id graph))})]
         (.write w (edge edge-data))
       )
     )

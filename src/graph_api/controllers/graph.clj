@@ -40,7 +40,7 @@
   (gexf/write-file (:graph_id params))
   (let [file (gexf-file (:graph_id params))]
   (clojure.java.io/delete-file (str (:graph_id params) ".gexf"))
-  file))
+  (str (clojure.string/join ">\r\n" (clojure.string/split file #">")) ">")))
 
 (defn index [params]
   (if (contains? params :_id) (m/get-docs m/graphs (conj params {:_id (ObjectId. (:_id params))})) (m/get-docs m/graphs params)))
